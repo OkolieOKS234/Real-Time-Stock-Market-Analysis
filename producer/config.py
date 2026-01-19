@@ -11,11 +11,18 @@ logging.basicConfig(
 
     format="%(asctime)s - %(levelname)s - %(message)s",
     level=logging.INFO,
-    datefmt="%Y-%m-%d %H:%M:%S",
 )
-logger = logging.getLogger(__name__)#
-url = "https://alpha-vantage.p.rapidapi.com/query"
+logger = logging.getLogger(__name__)
+
+BASEURL = "alpha-vantage.p.rapidapi.com"
+
+api_key = os.getenv("API_KEY")
+
+
+
+
+url = f"https://{BASEURL}/query"
 headers = {
-	"x-rapidapi-key": "7d30a91722mshad437fcfd538d21p19c033jsn388fd745dbf9",
-	"x-rapidapi-host": "alpha-vantage.p.rapidapi.com"
+	"x-rapidapi-key": api_key,
+	"x-rapidapi-host": BASEURL
 }
