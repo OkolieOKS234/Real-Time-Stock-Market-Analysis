@@ -13,14 +13,31 @@ def connect_to_api():
             "interval":"5min",
             "datatype":"json"}
 
-
-    try:
-        response = requests.get(url, headers=headers, params=querystring)
-        response.raise_for_status()  # Raise an error for bad status codes
-        data = response.json()
-        logger.info(f"Stocks data retrieved successfully for")
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Error connecting to API: {e}")
-        return None
+        try:
+            response = requests.get(url, headers=headers, params=querystring)
+            response.raise_for_status()  # Raise an error for bad status codes
+            data = response.json()
+            logger.info(f"Stocks data retrieved successfully for {stocks[stock]}")
+            json_responses.append(data)
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error connecting to API: {e}")
+            return None
     
+    return json_responses
+def extract_json(response):
+    records = []
+    for data in response:
+        symbol = data["Meta Data"]["2. Symbol"]
+
+        for date_str, metrics in data['Time Series (5min)'].items():
+            record = {
+                "symbol": symbol,
+                "date": date_str,
+                "open": float(metrics["1. open"]),
+                "high": float(metrics["2. high"]),
+                "low": float(metrics["3. low"]),
+                "close": float(metrics["4. close"])
+            }
+            records.append(record)
+    return records
     
