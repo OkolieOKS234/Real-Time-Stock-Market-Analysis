@@ -17,7 +17,7 @@ def connect_to_api():
             response = requests.get(url, headers=headers, params=querystring)
             response.raise_for_status()  # Raise an error for bad status codes
             data = response.json()
-            logger.info(f"Stocks data retrieved successfully for {stocks[stock]}")
+            logger.info(f"{stocks[stock]} Stocks data retrieved successfully ")
             json_responses.append(data)
         except requests.exceptions.RequestException as e:
             logger.error(f"Error connecting to API: {e}")
