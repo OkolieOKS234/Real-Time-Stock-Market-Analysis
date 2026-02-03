@@ -20,7 +20,6 @@ api_key = os.getenv("API_KEY")
 
 
 
-
 url = f"https://{BASEURL}/query"
 headers = {
 	"x-rapidapi-key": api_key,

@@ -2,13 +2,7 @@ services:
   spark-master:
     image: spark:3.5.1-python3
     container_name: spark-master
-    command: [
-      "/opt/spark/bin/spark-class", 
-      "org.apache.spark.deploy.master.Master", 
-      "--host", "spark-master",
-      "--port", "7077",
-      "--webui-port", "8080"
-    ]
+    command: [ "/opt/spark/bin/spark-class", "org.apache.spark.deploy.master.Master", "--host", "spark-master", "--port", "7077", "--webui-port", "8080" ]
     environment:
       - SPARK_MODE=master
       - SPARK_MASTER_HOST=spark-master
@@ -21,15 +15,9 @@ services:
       - stock_data
 
   spark-worker:
-    image: spark:3.5.1-python3 
+    image: spark:3.5.1-python3
     container_name: spark-worker
-    command: [
-      "/opt/spark/bin/spark-class",
-      "org.apache.spark.deploy.worker.Worker",
-      "spark://spark-master:7077",
-      "--port", "7078",
-      "--webui-port", "8081"
-    ]
+    command: [ "/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark-master:7077", "--port", "7078", "--webui-port", "8081" ]
     environment:
       - SPARK_WORKER_CORES=2
       - SPARK_WORKER_MEMORY=2G
@@ -40,6 +28,22 @@ services:
     networks:
       - stock_data
 
+  consumer:
+    build:
+      context: ./consumer
+      dockerfile: Dockerfile
+    image: stream-consumer
+    container_name: consumer
+    depends_on:
+      - spark-master
+      - kafka
+    volumes:
+      - ivy-cache:/opt/spark/work-dir/.ivy2
+      - ./consumer:/opt/spark/work-dir/apps
+    networks:
+      - stock_data
+
+  # kafka service
   kafka:
     image: confluentinc/cp-kafka:7.4.10
     container_name: kafka
@@ -53,10 +57,10 @@ services:
       KAFKA_NODE_ID: "1"
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
       KAFKA_LISTENERS: "PLAINTEXT://kafka:9092,PLAINTEXT_EXTERNAL://0.0.0.0:9094,CONTROLLER://0.0.0.0:9093"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT_INTERNAL:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT"
-      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT_INTERNAL"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
       KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
-      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT_INTERNAL://kafka:9092,PLAINTEXT_EXTERNAL://localhost:9094"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092,PLAINTEXT_EXTERNAL://localhost:9094"
       KAFKA_LOG_DIRS: "/var/lib/kafka/data"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -87,7 +91,7 @@ services:
     container_name: postgres_db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: admin 
+      POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: stock_data
     ports:
@@ -116,6 +120,7 @@ volumes:
   kafka-data:
   ivy-cache:
   postgres-data:
+
 
 networks:
   stock_data:
