@@ -11,6 +11,24 @@ This project is a complete **Real-Time Data Engineering Pipeline** designed to i
 
 ---
 
+## Business Aspect
+MarketPulse Analytics, based in New York, USA, is a leading provider of real-time financial data analytics, helping institutional investors make informed decisions.
+Aim : This project aims to build a scalable and efficient real-time data pipeline by processing it real-time, storing it in a scalable database and delivering insights on dashboards.
+
+## Business Problem and Solution
+- Reliability Shortfall: The platform lacks comprehensive, production-grade monitoring and alerting, making it difficult to detect, diagnose, and resolve operational anomalies in real time.
+
+- The existing infrastructure cannot elastically handle surges in data  volume, causing throughput degradation and processing backlogs during peak market activity.
+
+Solution
+
+#### Impact on the Business
+- Financial: Latency and unreliable processing translate directly to suboptimal trading signals, missed market opportunities, and quantifiable revenue loss.
+- Competitive: Inability to guarantee real-time performance undermines MarketPulse’s value proposition versus competitors that deliver faster, more reliable signals.
+- Regulatory & Client Risk: Delayed or inaccurate reporting jeopardizes compliance obligations and exposes institutional clients to audit and legal risk.
+
+
+
 ## 🏗️ Architecture & Data Flow
 
 ![Data Pipeline Architecture](./img/real_time_pipeline.png)
@@ -58,18 +76,32 @@ You need to provide your API key so the Producer can fetch data.
 1. Create a file named `.env` in the root directory (if it doesn't exist).
 2. Add your RapidAPI key:
 ```env
-API_KEY=your_rapidapi_key_here
+  # Create a .env file in project root directory
+  API_KEY=ADD API KEY
+  POSTGRES_USER=admin
+  POSTGRES_PASSWORD=admin
+  PGADMIN_DEFAULT_EMAIL=sample@admin.com
+  PGADMIN_DEFAULT_PASSWORD=admin
 ```
 
-### 3. Start the Pipeline
-We use Docker Compose to spin up all services (Kafka, Zookeeper, Spark, Postgres, etc.) at once.
+### 3. Activation of the Virtual Environment
 
 ```bash
-docker-compose up -d
+  python -m venv venv
+  source venv/Scripts/activate
 ```
-*The `-d` flag runs the containers in the background.*
+### 4. Install the necessary Dependencies
+  ```bash
+  pip install -r requirements.txt
+```
+### 5. Run your Docker Services
+- Open your Docker Desktop
+  ![Screenshot of pipeline](./screenshot.png)
+  
+```bash
+docker compose up -d
+```
 
----
 
 ## 🏃 Usage Guide
 
@@ -86,6 +118,8 @@ docker logs -f producer
 #### 2. Check Kafka (Intermediate)
 Open your browser and go to the **Kafka UI**:
 👉 **http://localhost:8085**
+
+![Screenshot](./screenshot2.png)
 
 - Click on **Consumers** or **Topics**.
 - You should see the topic `stock_analysis` receiving messages.
