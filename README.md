@@ -20,12 +20,21 @@ Aim : This project aims to build a scalable and efficient real-time data pipelin
 
 - The existing infrastructure cannot elastically handle surges in data  volume, causing throughput degradation and processing backlogs during peak market activity.
 
-Solution
-
 #### Impact on the Business
 - Financial: Latency and unreliable processing translate directly to suboptimal trading signals, missed market opportunities, and quantifiable revenue loss.
 - Competitive: Inability to guarantee real-time performance undermines MarketPulse’s value proposition versus competitors that deliver faster, more reliable signals.
 - Regulatory & Client Risk: Delayed or inaccurate reporting jeopardizes compliance obligations and exposes institutional clients to audit and legal risk.
+
+
+#### Solution
+
+  - implementation of actionable stock market insights presented through interactive Power BI dashboards.
+  - Improved decisions through large data streaming with kafka, python and postgresSQL
+
+
+
+
+
 
 
 
